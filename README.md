@@ -41,17 +41,22 @@ Ne telepítsünk tárolóból semmilyen OpenMANIPULATOR csomagot, bár Noetic es
 
 Helyette töltsük le ezeket a git repokat:
 ```console
+git clone https://github.com/MOGI-ROS/robotis_manipulator
+git clone https://github.com/MOGI-ROS/dynamixel-workbench
+git clone https://github.com/MOGI-ROS/dynamixel-workbench-msgs
+git clone https://github.com/MOGI-ROS/DynamixelSDK
 git clone https://github.com/MOGI-ROS/open_manipulator_controls
 git clone https://github.com/MOGI-ROS/open_manipulator_simulations
 git clone https://github.com/MOGI-ROS/open_manipulator_msgs
 git clone https://github.com/MOGI-ROS/open_manipulator
+git clone https://github.com/roboticsgroup/roboticsgroup_gazebo_plugins
 ```
 
 Fordítsuk újra a workspace-t, és máris készen állunk az első próbára.
 
 ## Első próba
 
-3 terminél ablakra lesz szükségünk, indítsuk el a következő launch fájlokat:
+3 terminál ablakra lesz szükségünk, indítsuk el a következő launch fájlokat:
 ```console
 roslaunch open_manipulator_gazebo open_manipulator_gazebo.launch
 ```
@@ -62,6 +67,16 @@ roslaunch open_manipulator_controller open_manipulator_controller.launch use_pla
 
 ```console
 roslaunch open_manipulator_control_gui open_manipulator_control_gui.launch
+```
+
+Ha ebbe a hibába futnánk:
+```console
+[ERROR] [1618922478.206182640, 0.022000000]: Could not load controller 'gripper_position' because controller type 'effort_controllers/JointPositionController' does not exist.
+```
+
+Akkor telepítsük az `effort controllers` csomagot:
+```console
+sudo apt install ros-$(rosversion -d)-effort-controllers
 ```
 
 ![alt text][image2]
@@ -220,9 +235,20 @@ roslaunch ur3_e_moveit_config moveit_rviz.launch config:=true
 ## UR3e gripperrel
 
 Tegyünk egy grippert a UR3e-re, ehhez egy RH-P12-RN grippert fogunk használni a ROBOTIS-tól, a tanszéken található UR3e is ezzel a gripperrel van felszerelve. Elég sok helyen kell módosítanunk a gyári csomagokat, ezért használjunk egy olyan branchet, ahol ez már be is van állítva!
+
+Menjünk a `src/universal_robot` mappába és:
 ```console
 git checkout rh-p12-rn
 ```
+
+A gripper miatt töltsük le még a következő csomagokat:
+```console
+git clone -b ur3e-gripper https://github.com/dudasdavid/RH-P12-RN-A
+git clone https://github.com/ROBOTIS-GIT/ROBOTIS-Framework
+git clone https://github.com/ROBOTIS-GIT/ROBOTIS-Framework-msgs
+```
+
+Fordítsuk újra a workspace-t!
 
 A `rh-p12-rn` branchen pontosan ugyanúgy kell elindítanunk a szimulációt:
 
