@@ -49,6 +49,10 @@ git clone https://github.com/MOGI-ROS/open_manipulator_controls
 git clone https://github.com/MOGI-ROS/open_manipulator_simulations
 git clone https://github.com/MOGI-ROS/open_manipulator_msgs
 git clone https://github.com/MOGI-ROS/open_manipulator
+```
+
+Ezen kívül használni fogunk még egy gazebo plugint, amire az OpenMANIPULATOR *description*-je is hivatkozik, azonban a hivatalos dokumentációban elfelejtették megemlíteni:
+```console
 git clone https://github.com/roboticsgroup/roboticsgroup_gazebo_plugins
 ```
 
