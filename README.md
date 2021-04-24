@@ -10,6 +10,13 @@
 [image8]: ./assets/openmanipulator_6.png "openmanipulator"
 [image9]: ./assets/ik.png "openmanipulator"
 [image10]: ./assets/openmanipulator_7.png "openmanipulator"
+[image11]: ./assets/ur_1.png "UR3e"
+[image12]: ./assets/ur_2.png "UR3e"
+[image13]: ./assets/ur_3.png "UR3e"
+[image14]: ./assets/ur_4.png "UR3e"
+[image15]: ./assets/ur_5.png "UR3e"
+[image16]: ./assets/ur_6.png "UR3e"
+[image17]: ./assets/ur_7.png "UR3e"
 
 # 11. - 12. hét - robotkarok
 
@@ -252,9 +259,8 @@ rosrun open_manipulator_tools inverse_kinematics.py
 ```
 ![alt text][image10]
 
-
 # UR3e robotkar
-A következő kar, amit alaposabban megnézünk egy UR3e robotkar a Universal Robots-tól, ez szintén megtalálható a tanszéken. Alapesetben a kar szimulációjában nincs benne semmilyen megfogó, ezt nekünk kell hozzáadni.
+A következő kar, amit alaposabban megnézünk egy [UR3e robotkar a Universal Robots-tól](https://www.universal-robots.com/products/ur3-robot/), ez szintén megtalálható a tanszéken. Alapesetben a kar szimulációjában nincs benne semmilyen megfogó, ezt nekünk kell majd hozzáadni.
 
 Töltsük le a megfelelő csomagot a szimulációhoz:
 ```console
@@ -265,42 +271,65 @@ Fordítsuk újra a workspace-t és próbáljuk ki! Ezúttal is 3 terminálra les
 ```console
 roslaunch ur_e_gazebo ur3e.launch limited:=true
 ```
+Ez elindítja a Gazebo szimulációt és a joint trajectory controller-t:
+![alt text][image11]
+
+A következő launchfájl elindítja a MoveIt-ot:
 ```console
 roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
 ```
+A harmadik pedig megnyitja az RViz-t:
 ```console
 roslaunch ur3_e_moveit_config moveit_rviz.launch config:=true
 ```
+Ezután már használhatjuk is a MoveIt-ot a karral:
+![alt text][image12]
+
+Természetesen végre is hajthatjuk a szimulációban, amit a MoveIt tervezett:
+![alt text][image13]
 
 ## UR3e gripperrel
 
-Tegyünk egy grippert a UR3e-re, ehhez egy RH-P12-RN grippert fogunk használni a ROBOTIS-tól, a tanszéken található UR3e is ezzel a gripperrel van felszerelve. Elég sok helyen kell módosítanunk a gyári csomagokat, ezért használjunk egy olyan branchet, ahol ez már be is van állítva!
+Tegyünk egy grippert a UR3e-re, ehhez egy RH-P12-RN grippert fogunk használni a ROBOTIS-tól, a tanszéken található UR3e is ezzel a gripperrel van felszerelve. Elég sok helyen kell módosítanunk a gyári csomagokat, ezért használjunk most egy olyan branchet, ahol ez már be is van állítva!
 
 Menjünk a `src/universal_robot` mappába és:
 ```console
 git checkout rh-p12-rn
 ```
 
-A gripper miatt töltsük le még a következő csomagokat:
+A gripper miatt töltsük le még a következő csomagokat is:
 ```console
 git clone -b ur3e-gripper https://github.com/dudasdavid/RH-P12-RN-A
 git clone https://github.com/ROBOTIS-GIT/ROBOTIS-Framework
 git clone https://github.com/ROBOTIS-GIT/ROBOTIS-Framework-msgs
 ```
 
-Fordítsuk újra a workspace-t!
+Természetesen fordítsuk újra a workspace-t!
 
-A `rh-p12-rn` branchen pontosan ugyanúgy kell elindítanunk a szimulációt:
+A `rh-p12-rn` branchen pontosan ugyanúgy kell elindítanunk a szimulációt, mint az előbb:
 
 ```console
 roslaunch ur_e_gazebo ur3e.launch limited:=true
 ```
+Ezzel elindul a Gazebo szimuláció, ahol ezúttal már a gripper is része a modellünknek:
+![alt text][image14]
+
+Elindítjuk a MoveIt-ot:
 ```console
 roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
 ```
+
+És végül az RViz-t:
 ```console
 roslaunch ur3_e_moveit_config moveit_rviz.launch config:=true
 ```
+![alt text][image15]
+
+A MoveIt-ban, a már korábban látottakhoz hasonlóan, átválthatunk a gripper planning group-jára, és például bezárhatjuk azt:
+![alt text][image16]
+
+Ami természetesen a szimulációban is megtörténik:
+![alt text][image17]
 
 ## SRDF fájl
 
