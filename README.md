@@ -21,7 +21,10 @@
 # 11. - 12. hét - robotkarok
 
 # Hova fogunk eljutni?
-<a href="https://youtu.be/tNUHpl0qe6A"><img height="400" src="./assets/youtube.png"></a> 
+<a href="https://youtu.be/mm2vKYH-Jy8"><img width="600" src="./assets/youtube_1.png"></a>  
+<a href="https://youtu.be/TDOdKdiD7pk"><img width="600" src="./assets/youtube_2.png"></a>  
+<a href="https://youtu.be/llD6eGD8nEM"><img width="600" src="./assets/youtube_3.png"></a>  
+<a href="https://youtu.be/BLvH7DzvwUk"><img width="600" src="./assets/youtube_4.png"></a>
 
 # Tartalomjegyzék
 1. [Kezdőcsomag](#Kezdőcsomag)  
@@ -88,10 +91,10 @@ port_name and baud_rate are set to /dev/ttyUSB0, 1000000
 [INFO] Ready to simulate /open_manipulator_controller on Gazebo
 ```
 
+Ez pedig elindítja az OpenMANIPULATOR grafikus vezérlőpaneljét. Indítsuk el a timert, engedélyezzük az aktuáto, majd küldjük a kart home pozícióba:
 ```console
 roslaunch open_manipulator_control_gui open_manipulator_control_gui.launch
 ```
-Ez pedig elindítja az OpenMANIPULATOR grafikus vezérlőpaneljét. Indítsuk el a timert, engedélyezzük az aktuáto, majd küldjük a kart home pozícióba:
 ![alt text][image8]
 
 Ha esetleg ebbe a hibába futnánk:
@@ -336,6 +339,8 @@ Ami természetesen a szimulációban is megtörténik:
 
 
 ## MoveIt commander
+
+sudo apt install ros-melodic-moveit-commander
 
 
 
