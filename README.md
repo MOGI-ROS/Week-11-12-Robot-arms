@@ -17,6 +17,10 @@
 [image15]: ./assets/ur_5.png "UR3e"
 [image16]: ./assets/ur_6.png "UR3e"
 [image17]: ./assets/ur_7.png "UR3e"
+[image18]: ./assets/ur_8.png "UR3e"
+[image19]: ./assets/ur_9.png "UR3e"
+[image20]: ./assets/ur_10.png "UR3e"
+[image21]: ./assets/moveit_commander.gif "MoveIt commander"
 
 # 11. - 12. hét - robotkarok
 
@@ -37,8 +41,9 @@
 2.6. [Saját IK](#Saját-IK)  
 3. [UR3e robotkar](#UR3e-robotkar)  
 3.1. [UR3e gripperrel](#UR3e-gripperrel)  
-3.2. [SRDF fájl](#SRDF-fájl)  
-3.3. [MoveIt commander](#MoveIt-commander)  
+3.2. [Gazebo világ](#Gazebo-világ) 
+3.3. [SRDF fájl](#SRDF-fájl)  
+3.4. [MoveIt commander](#MoveIt-commander)  
 
 # Kezdőcsomag
 
@@ -277,6 +282,9 @@ roslaunch ur_e_gazebo ur3e.launch limited:=true
 Ez elindítja a Gazebo szimulációt és a joint trajectory controller-t:
 ![alt text][image11]
 
+>Természetsen itt indíthatunk egy `rqt_joint_trajectory_controller`-t:
+>![alt text][image18]
+
 A következő launchfájl elindítja a MoveIt-ot:
 ```console
 roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
@@ -317,7 +325,7 @@ roslaunch ur_e_gazebo ur3e.launch limited:=true
 Ezzel elindul a Gazebo szimuláció, ahol ezúttal már a gripper is része a modellünknek:
 ![alt text][image14]
 
-Elindítjuk a MoveIt-ot:
+Elindítjuk a MoveIt-ot, ahogy az előbb:
 ```console
 roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
 ```
@@ -334,13 +342,258 @@ A MoveIt-ban, a már korábban látottakhoz hasonlóan, átválthatunk a gripper
 Ami természetesen a szimulációban is megtörténik:
 ![alt text][image17]
 
+## Gazebo világ
+
+Az `rh-p12-rn` branchen korábban módosítottam a `/universal_robot/ur_e_gazebo/launch/ur3e.launch` fájlt, így argumentumként megadhatjuk a Gazebo világot és a robot z koordinátáját!
+
+Töltsük be az előző lecke világát!
+```console
+roslaunch ur_e_gazebo ur3e.launch limited:=true world_file:='$(find bme_ros_simple_arm)/worlds/world.world' z:=1.04 yaw:=-1.5707
+```
+![alt text][image19]
+
 ## SRDF fájl
+Ha elindítjuk a szimulációt és a MoveIt-et az Rviz-zel együtt, akkor a planning grouphoz, akkor láthatunk néhány előre definiált pozíciót:
+![alt text][image20]
 
-
+Ezeket megadhatjuk a MoveIt Setup Assistant segítségével, vagy az [SRDF](http://wiki.ros.org/srdf) fájl szerkesztésével: `/universal_robot/ur3_e_moveit_config/config/ur3e.srdf`.
 
 ## MoveIt commander
-
+A MoveIt commander segítségével a saját node-unkból tudjuk használni a MoveIt API-ját. Természetesen elérhető C++-hoz és Pythonhoz is. A MoveIt commander használatához telepítsük fel tárolóból:
+```console
 sudo apt install ros-melodic-moveit-commander
+```
 
+A használatához készítsünk egy új ROS csomagot és ebben fogjuk létrehozni a saját node-unkat:
 
+```console
+catkin_create_pkg ur_moveit_commander roscpp rospy
+```
 
+Készítsünk egy `scripts` mappát a csomagba és hozzuk létre a `ur_moveit_commander.py` fájlt, ne felejtsük el futatthatóvá tenni!
+
+A fájl tartalma legyen a következő:
+```python
+#!/usr/bin/env python
+
+import sys
+import time
+import rospy
+import moveit_commander
+import moveit_msgs.msg
+from moveit_commander.conversions import pose_to_list
+import geometry_msgs.msg
+from trajectory_msgs.msg import JointTrajectoryPoint, JointTrajectory
+
+def all_close(goal, actual, tolerance):
+  """
+  Convenience method for testing if a list of values are within a tolerance of their counterparts in another list
+  @param: goal       A list of floats, a Pose or a PoseStamped
+  @param: actual     A list of floats, a Pose or a PoseStamped
+  @param: tolerance  A float
+  @returns: bool
+  """
+  all_equal = True
+  if type(goal) is list:
+    for index in range(len(goal)):
+      if abs(actual[index] - goal[index]) > tolerance:
+        return False
+
+  elif type(goal) is geometry_msgs.msg.PoseStamped:
+    return all_close(goal.pose, actual.pose, tolerance)
+
+  elif type(goal) is geometry_msgs.msg.Pose:
+    return all_close(pose_to_list(goal), pose_to_list(actual), tolerance)
+
+  return True
+
+class MoveGroupPythonInteface(object):
+  """MoveGroupPythonInteface"""
+  def __init__(self):
+
+    ## First initialize `moveit_commander`_ and a `rospy`_ node:
+    moveit_commander.roscpp_initialize(sys.argv)
+    rospy.init_node('move_group_python_interface', anonymous=True)
+
+    ## Instantiate a `RobotCommander`_ object. Provides information such as the robot's
+    ## kinematic model and the robot's current joint states
+    robot = moveit_commander.RobotCommander()
+
+    ## Instantiate a `PlanningSceneInterface`_ object.  This provides a remote interface
+    ## for getting, setting, and updating the robot's internal understanding of the
+    ## surrounding world:
+    scene = moveit_commander.PlanningSceneInterface()
+
+    ## Instantiate a `MoveGroupCommander`_ object.  This object is an interface
+    ## to a planning group (group of joints).  In this tutorial the group is the primary
+    ## arm joints in the Panda robot, so we set the group's name to "panda_arm".
+    ## If you are using a different robot, change this value to the name of your robot
+    ## arm planning group.
+    ## This interface can be used to plan and execute motions:
+    group_name = "manipulator"
+    move_group = moveit_commander.MoveGroupCommander(group_name)
+
+    # Create a publisher for the Gazebo simulated gripper
+    gazebo_publisher = rospy.Publisher('/gripper_gazebo_controller/command', JointTrajectory, queue_size=1)
+
+    # Getting Basic Information
+    # We can get the name of the reference frame for this robot:
+    planning_frame = move_group.get_planning_frame()
+    print "============ Planning frame: %s" % planning_frame
+
+    # We can also print the name of the end-effector link for this group:
+    eef_link = move_group.get_end_effector_link()
+    print "============ End effector link: %s" % eef_link
+
+    # We can get a list of all the groups in the robot:
+    group_names = robot.get_group_names()
+    print "============ Available Planning Groups:", robot.get_group_names()
+
+    # Gazebo gripper
+    self.gazebo_trajectory_command = JointTrajectory()
+    self.gazebo_trajectory_command.joint_names = ["gripper"]
+    self.gazebo_trajectory_point = JointTrajectoryPoint()
+    self.gazebo_trajectory_point.time_from_start = rospy.rostime.Duration(1,0)
+    self.gazebo_trajectory_point.velocities = [0.0]
+
+    # Misc variables
+    self.robot = robot
+    self.scene = scene
+    self.move_group = move_group
+    self.planning_frame = planning_frame
+    self.eef_link = eef_link
+    self.group_names = group_names
+    self.gazebo_publisher = gazebo_publisher
+
+  def set_gripper(self, status):
+      if status == "open":
+        # Gazebo gripper value
+        self.gazebo_trajectory_point.positions = [0.0]
+      else:
+        self.gazebo_trajectory_point.positions = [1.135]
+
+      # Publish gazebo gripper position
+      self.gazebo_trajectory_command.header.stamp = rospy.Time.now()
+      self.gazebo_trajectory_command.points = [self.gazebo_trajectory_point]
+      self.gazebo_publisher.publish(self.gazebo_trajectory_command)
+
+  def go_to_joint_angles(self, joint_goals):
+
+    ## Planning to a Joint Goal
+    ## The UR's zero configuration is at a `singularity <https://www.quora.com/Robotics-What-is-meant-by-kinematic-singularity>`_ so the first
+    ## thing we want to do is move it to a slightly better configuration.
+    # We can get the joint values from the group and adjust some of the values:
+    joint_goal = self.move_group.get_current_joint_values()
+    joint_goal[0] = joint_goals[0]
+    joint_goal[1] = joint_goals[1]
+    joint_goal[2] = joint_goals[2]
+    joint_goal[3] = joint_goals[3]
+    joint_goal[4] = joint_goals[4]
+    joint_goal[5] = joint_goals[5]
+
+    # The go command can be called with joint values, poses, or without any
+    # parameters if you have already set the pose or joint target for the group
+    self.move_group.go(joint_goal, wait=True)
+
+    # Calling ``stop()`` ensures that there is no residual movement
+    self.move_group.stop()
+
+    # For testing:
+    current_joints = self.move_group.get_current_joint_values()
+    return all_close(joint_goal, current_joints, 0.01)
+
+  def go_to_pose(self, x, y, z):
+    ## Planning to a Pose Goal
+    ## We can plan a motion for this group to a desired pose for the
+    ## end-effector:
+    pose_goal = geometry_msgs.msg.Pose()
+    # set proper quaternion for the vertical orientation: https://quaternions.online/
+    pose_goal.orientation.x = -0.383 # -1
+    pose_goal.orientation.y = 0.924
+    
+    pose_goal.position.x = x
+    pose_goal.position.y = y
+    pose_goal.position.z = z
+
+    self.move_group.set_pose_target(pose_goal)
+
+    ## Now, we call the planner to compute the plan and execute it.
+    plan = self.move_group.go(wait=True)
+    # Calling `stop()` ensures that there is no residual movement
+    self.move_group.stop()
+    # It is always good to clear your targets after planning with poses.
+    # Note: there is no equivalent function for clear_joint_value_targets()
+    self.move_group.clear_pose_targets()
+
+    # For testing:
+    # Note that since this section of code will not be included in the tutorials
+    # we use the class variable rather than the copied state variable
+    current_pose = self.move_group.get_current_pose().pose
+    return all_close(pose_goal, current_pose, 0.01)
+
+  def go_to_named_target(self, name):
+    self.move_group.set_named_target(name)
+
+    ## Now, we call the planner to compute the plan and execute it.
+    plan = self.move_group.go(wait=True)
+
+    # Calling ``stop()`` ensures that there is no residual movement
+    self.move_group.stop()
+
+def main():
+  try:
+
+    moveit_commander = MoveGroupPythonInteface()
+
+    # Set max velocity
+    moveit_commander.move_group.set_max_velocity_scaling_factor(0.2)
+    # Set tolerances, without that IK cannot do a valid plan
+    moveit_commander.move_group.set_goal_position_tolerance(0.0005)
+    moveit_commander.move_group.set_goal_orientation_tolerance(0.001)
+
+    time.sleep(2)
+    
+    raw_input("============ Press `Enter` to go joint angles...")
+    moveit_commander.go_to_joint_angles([-1.5708, -1.5708, -1.0472, -1.0472, 1.5708, 0.7854])
+
+    raw_input("============ Press `Enter` to close gripper...")
+    moveit_commander.set_gripper("closed")
+
+    raw_input("============ Press `Enter` to go to X,Y,Z coordinates...")
+    moveit_commander.go_to_pose(0.3, 0.2, 0.2)
+
+    raw_input("============ Press `Enter` to open gripper...")
+    moveit_commander.set_gripper("open")
+
+    raw_input("============ Press `Enter` to go up position...")
+    moveit_commander.go_to_named_target("up")
+
+  except rospy.ROSInterruptException:
+    return
+  except KeyboardInterrupt:
+    return
+
+if __name__ == '__main__':
+  main()
+```
+
+Fordítsuk újra a workspace-t, majd `source devel/setup.bash`!
+
+Indítsuk el a szimulációt:
+```console
+roslaunch ur_e_gazebo ur3e.launch limited:=true
+```
+
+A MoveIt-ot:
+```console
+roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
+```
+
+És az új node-unkat:
+```console
+rosrun ur_moveit_commander ur_moveit_commander.py
+```
+
+![alt text][image21]
+
+A MoveIt commander node-unk alapja a [Move Group Python Interface tutorial](https://ros-planning.github.io/moveit_tutorials/doc/move_group_python_interface/move_group_python_interface_tutorial.html), így javaslom annak a végigcsinálását is annak, aki szeretne ezzel részletesebben foglalkozni!
