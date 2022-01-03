@@ -272,12 +272,12 @@ A következő kar, amit alaposabban megnézünk egy [UR3e robotkar a Universal R
 
 Töltsük le a megfelelő csomagot a szimulációhoz:
 ```console
-git clone -b calibration_devel https://github.com/dudasdavid/universal_robot
+git clone -b moveit https://github.com/dudasdavid/universal_robot
 ```
 
 Fordítsuk újra a workspace-t és próbáljuk ki! Ezúttal is 3 terminálra lesz szükségünk:
 ```console
-roslaunch ur_e_gazebo ur3e.launch limited:=true
+roslaunch ur_gazebo ur3e_bringup.launch
 ```
 Ez elindítja a Gazebo szimulációt és a joint trajectory controller-t:
 ![alt text][image11]
@@ -287,11 +287,11 @@ Ez elindítja a Gazebo szimulációt és a joint trajectory controller-t:
 
 A következő launchfájl elindítja a MoveIt-ot:
 ```console
-roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
+roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
 ```
 A harmadik pedig megnyitja az RViz-t:
 ```console
-roslaunch ur3_e_moveit_config moveit_rviz.launch config:=true
+roslaunch ur3e_moveit_config moveit_rviz.launch rviz_config:=true
 ```
 Ezután már használhatjuk is a MoveIt-ot a karral:
 ![alt text][image12]
@@ -320,19 +320,19 @@ Természetesen fordítsuk újra a workspace-t!
 A `rh-p12-rn` branchen pontosan ugyanúgy kell elindítanunk a szimulációt, mint az előbb:
 
 ```console
-roslaunch ur_e_gazebo ur3e.launch limited:=true
+roslaunch ur_gazebo ur3e_bringup.launch
 ```
 Ezzel elindul a Gazebo szimuláció, ahol ezúttal már a gripper is része a modellünknek:
 ![alt text][image14]
 
 Elindítjuk a MoveIt-ot, ahogy az előbb:
 ```console
-roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
+roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
 ```
 
 És végül az RViz-t:
 ```console
-roslaunch ur3_e_moveit_config moveit_rviz.launch config:=true
+roslaunch ur3e_moveit_config moveit_rviz.launch rviz_config:=true
 ```
 ![alt text][image15]
 
@@ -344,11 +344,11 @@ Ami természetesen a szimulációban is megtörténik:
 
 ## Gazebo világ
 
-Az `rh-p12-rn` branchen korábban módosítottam a `/universal_robot/ur_e_gazebo/launch/ur3e.launch` fájlt, így argumentumként megadhatjuk a Gazebo világot és a robot z koordinátáját!
+Az `rh-p12-rn` branchen korábban módosítottam a `/universal_robot/ur_gazebo/launch/ur3e_bringup.launch` fájlt, így argumentumként megadhatjuk a Gazebo világot és a robot z koordinátáját!
 
 Töltsük be az előző lecke világát!
 ```console
-roslaunch ur_e_gazebo ur3e.launch limited:=true world_file:='$(find bme_ros_simple_arm)/worlds/world.world' z:=1.04 yaw:=-1.5707
+roslaunch ur_gazebo ur3e_bringup.launch gazebo_world:='$(find bme_ros_simple_arm)/worlds/world.world' spawn_z:=1.04 spawn_yaw:=-1.5707
 ```
 ![alt text][image19]
 
@@ -581,12 +581,12 @@ Fordítsuk újra a workspace-t, majd `source devel/setup.bash`!
 
 Indítsuk el a szimulációt:
 ```console
-roslaunch ur_e_gazebo ur3e.launch limited:=true
+roslaunch ur_gazebo ur3e_bringup.launch
 ```
 
 A MoveIt-ot:
 ```console
-roslaunch ur3_e_moveit_config ur3_e_moveit_planning_execution.launch sim:=true limited:=true
+roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
 ```
 
 És az új node-unkat:
