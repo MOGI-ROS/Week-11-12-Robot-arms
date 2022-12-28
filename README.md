@@ -289,6 +289,24 @@ A következő launchfájl elindítja a MoveIt-ot:
 ```console
 roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
 ```
+
+> Ha nincs fent a Trac IK inverz kinematikai solver a gépünkön, nyugodtan módosítsuk a `./universal_robot/ur3e_moveit_config/config/kinematics.yaml` fájlt, hogy a KDL-t használja:
+>```yaml
+>manipulator:
+>  kinematics_solver: kdl_kinematics_plugin/KDLKinematicsPlugin
+>  kinematics_solver_search_resolution: 0.001
+>  kinematics_solver_timeout: 0.05
+>  kinematics_solver_attempts: 1
+>```
+
+>ROS Noetic esetén előfordulhat, hogy a tárolóból feltelepített MoveIt nem kompatibilis a Universal Robots által kiadott csomagokkal és a MoveIt nem hajlandó semmilyen végrehajtható trajektóriát tervezni. Ebben az esetben én mindig egy kompatibilis MoveIt csomagot fordítok újra a catkin workspace-emben, ezzel hiba nélkül működik a UR robot szimulációja. A következő csomagok tárolóból feltett verzióit kell törölni, és GitHub-ról a következő verziókat használni:
+>```yaml
+>- srdfdom: 0.6.0
+>- geometric_shaped: 0.7.3
+>- moveit_msgs: 0.11.1
+>- moveit: 1.0.7
+>```
+
 A harmadik pedig megnyitja az RViz-t:
 ```console
 roslaunch ur3e_moveit_config moveit_rviz.launch rviz_config:=true
@@ -336,6 +354,8 @@ roslaunch ur3e_moveit_config moveit_rviz.launch rviz_config:=true
 ```
 ![alt text][image15]
 
+>A MoveIt nem igazán képes a KDL solver segítségével megbírkózni azzal, hogy a UR robotok legtöbb csuklója +/-360 fokot is képes mozogni, ezért sokszor feleslegesen tekereg a robotunk. Ennek a legegyszerűbb kiiktatása az, ha megszerkesztjük a robotunk joint limitjeit a `./universal_robot/ur_description/config/ur3e/joint_limits.yaml` fájlban. Módosítsunk minden `max_position` és `min_position` limitet +/-180 fokra.
+
 A MoveIt-ban, a már korábban látottakhoz hasonlóan, átválthatunk a gripper planning group-jára, és például bezárhatjuk azt:
 ![alt text][image16]
 
@@ -359,10 +379,7 @@ Ha elindítjuk a szimulációt és a MoveIt-et az Rviz-zel együtt, akkor a plan
 Ezeket megadhatjuk a MoveIt Setup Assistant segítségével, vagy az [SRDF](http://wiki.ros.org/srdf) fájl szerkesztésével: `/universal_robot/ur3_e_moveit_config/config/ur3e.srdf`.
 
 ## MoveIt commander
-A MoveIt commander segítségével a saját node-unkból tudjuk használni a MoveIt API-ját. Természetesen elérhető C++-hoz és Pythonhoz is. A MoveIt commander használatához telepítsük fel tárolóból:
-```console
-sudo apt install ros-melodic-moveit-commander
-```
+A MoveIt commander segítségével a saját node-unkból tudjuk használni a MoveIt API-ját. Természetesen elérhető C++-hoz és Pythonhoz is.
 
 A használatához készítsünk egy új ROS csomagot és ebben fogjuk létrehozni a saját node-unkat:
 
@@ -374,7 +391,7 @@ Készítsünk egy `scripts` mappát a csomagba és hozzuk létre a `ur_moveit_co
 
 A fájl tartalma legyen a következő:
 ```python
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import time
@@ -439,15 +456,15 @@ class MoveGroupPythonInteface(object):
     # Getting Basic Information
     # We can get the name of the reference frame for this robot:
     planning_frame = move_group.get_planning_frame()
-    print "============ Planning frame: %s" % planning_frame
+    print("============ Planning frame: %s" % planning_frame)
 
     # We can also print the name of the end-effector link for this group:
     eef_link = move_group.get_end_effector_link()
-    print "============ End effector link: %s" % eef_link
+    print("============ End effector link: %s" % eef_link)
 
     # We can get a list of all the groups in the robot:
     group_names = robot.get_group_names()
-    print "============ Available Planning Groups:", robot.get_group_names()
+    print("============ Available Planning Groups:", robot.get_group_names())
 
     # Gazebo gripper
     self.gazebo_trajectory_command = JointTrajectory()
@@ -553,19 +570,19 @@ def main():
 
     time.sleep(2)
     
-    raw_input("============ Press `Enter` to go joint angles...")
+    input("============ Press `Enter` to go joint angles...")
     moveit_commander.go_to_joint_angles([-1.5708, -1.5708, -1.0472, -1.0472, 1.5708, 0.7854])
 
-    raw_input("============ Press `Enter` to close gripper...")
+    input("============ Press `Enter` to close gripper...")
     moveit_commander.set_gripper("closed")
 
-    raw_input("============ Press `Enter` to go to X,Y,Z coordinates...")
+    input("============ Press `Enter` to go to X,Y,Z coordinates...")
     moveit_commander.go_to_pose(0.3, 0.2, 0.2)
 
-    raw_input("============ Press `Enter` to open gripper...")
+    input("============ Press `Enter` to open gripper...")
     moveit_commander.set_gripper("open")
 
-    raw_input("============ Press `Enter` to go up position...")
+    input("============ Press `Enter` to go up position...")
     moveit_commander.go_to_named_target("up")
 
   except rospy.ROSInterruptException:
