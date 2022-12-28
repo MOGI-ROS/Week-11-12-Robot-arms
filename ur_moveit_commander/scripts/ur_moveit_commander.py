@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import time
@@ -63,15 +63,15 @@ class MoveGroupPythonInteface(object):
     # Getting Basic Information
     # We can get the name of the reference frame for this robot:
     planning_frame = move_group.get_planning_frame()
-    print "============ Planning frame: %s" % planning_frame
+    print("============ Planning frame: %s" % planning_frame)
 
     # We can also print the name of the end-effector link for this group:
     eef_link = move_group.get_end_effector_link()
-    print "============ End effector link: %s" % eef_link
+    print("============ End effector link: %s" % eef_link)
 
     # We can get a list of all the groups in the robot:
     group_names = robot.get_group_names()
-    print "============ Available Planning Groups:", robot.get_group_names()
+    print("============ Available Planning Groups:", robot.get_group_names())
 
     # Gazebo gripper
     self.gazebo_trajectory_command = JointTrajectory()
@@ -177,19 +177,19 @@ def main():
 
     time.sleep(2)
     
-    raw_input("============ Press `Enter` to go joint angles...")
+    input("============ Press `Enter` to go joint angles...")
     moveit_commander.go_to_joint_angles([-1.5708, -1.5708, -1.0472, -1.0472, 1.5708, 0.7854])
 
-    raw_input("============ Press `Enter` to close gripper...")
+    input("============ Press `Enter` to close gripper...")
     moveit_commander.set_gripper("closed")
 
-    raw_input("============ Press `Enter` to go to X,Y,Z coordinates...")
+    input("============ Press `Enter` to go to X,Y,Z coordinates...")
     moveit_commander.go_to_pose(0.3, 0.2, 0.2)
 
-    raw_input("============ Press `Enter` to open gripper...")
+    input("============ Press `Enter` to open gripper...")
     moveit_commander.set_gripper("open")
 
-    raw_input("============ Press `Enter` to go up position...")
+    input("============ Press `Enter` to go up position...")
     moveit_commander.go_to_named_target("up")
 
   except rospy.ROSInterruptException:
