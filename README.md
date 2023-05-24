@@ -41,7 +41,7 @@
 2.6. [Saját IK](#Saját-IK)  
 3. [UR3e robotkar](#UR3e-robotkar)  
 3.1. [UR3e gripperrel](#UR3e-gripperrel)  
-3.2. [Gazebo világ](#Gazebo-világ) 
+3.2. [Gazebo világ](#Gazebo-világ)  
 3.3. [SRDF fájl](#SRDF-fájl)  
 3.4. [MoveIt commander](#MoveIt-commander)  
 
@@ -301,7 +301,7 @@ roslaunch ur3e_moveit_config ur3e_moveit_planning_execution.launch sim:=true
 
 >ROS Noetic esetén előfordulhat, hogy a tárolóból feltelepített MoveIt nem kompatibilis a Universal Robots által kiadott csomagokkal és a MoveIt nem hajlandó semmilyen végrehajtható trajektóriát tervezni. Ebben az esetben én mindig egy kompatibilis MoveIt csomagot fordítok újra a catkin workspace-emben, ezzel hiba nélkül működik a UR robot szimulációja. A következő csomagok tárolóból feltett verzióit kell törölni, és GitHub-ról a következő verziókat használni:
 >```yaml
->- srdfdom: 0.6.0
+>- srdfdom: 0.6.2
 >- geometric_shaped: 0.7.3
 >- moveit_msgs: 0.11.1
 >- moveit: 1.0.7
