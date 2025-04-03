@@ -27,9 +27,8 @@ from launch.actions import RegisterEventHandler, SetEnvironmentVariable
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution, Command
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 def get_robot_model():
     robot_model = os.getenv("ROBOT_MODEL", "om_y")
