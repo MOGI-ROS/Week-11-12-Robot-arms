@@ -171,7 +171,7 @@ def generate_launch_description():
                 target_action=spawn_urdf_node,
                 on_exit=[load_joint_state_controller],
             )
-        )
+    )
     
     robot_controllers_event_handler = RegisterEventHandler(
             event_handler=OnProcessExit(
@@ -179,7 +179,7 @@ def generate_launch_description():
                on_exit=[load_arm_controller,
                         load_gripper_controller],
             )
-        )
+    )
 
     gz_bridge_node = Node(
         package="ros_gz_bridge",
@@ -208,6 +208,16 @@ def generate_launch_description():
         )
     )
 
+    # Load MoveIt! only after controllers are loaded
+    moveit_event_handler = RegisterEventHandler(
+            event_handler=OnProcessExit(
+               target_action=load_joint_state_controller,
+               on_exit=[move_group_launch,
+                        rviz_launch],
+            )
+    )
+
+
     launchDescriptionObject = LaunchDescription()
 
     launchDescriptionObject.add_action(sim_time_arg)
@@ -222,8 +232,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(robot_state_publisher_node)
     launchDescriptionObject.add_action(spawn_urdf_node)
     launchDescriptionObject.add_action(gz_bridge_node)
-    launchDescriptionObject.add_action(rviz_launch)
-    launchDescriptionObject.add_action(move_group_launch)
+    launchDescriptionObject.add_action(moveit_event_handler)
 
     return launchDescriptionObject
 

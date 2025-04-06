@@ -214,6 +214,14 @@ def generate_launch_description():
         ]
     )
 
+    # Load RViz only after controllers are loaded
+    rviz_event_handler = RegisterEventHandler(
+            event_handler=OnProcessExit(
+               target_action=load_joint_state_controller,
+               on_exit=[rviz_node],
+            )
+    )
+
     # Node to bridge camera topics
     gz_image_bridge_node = Node(
         package="ros_gz_image",
@@ -256,7 +264,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(robot_state_publisher_node)
     launchDescriptionObject.add_action(spawn_urdf_node)
     launchDescriptionObject.add_action(gz_bridge_node)
-    launchDescriptionObject.add_action(rviz_node)
+    launchDescriptionObject.add_action(rviz_event_handler)
     launchDescriptionObject.add_action(gz_image_bridge_node)
     launchDescriptionObject.add_action(relay_gripper_camera_info_node)
 
