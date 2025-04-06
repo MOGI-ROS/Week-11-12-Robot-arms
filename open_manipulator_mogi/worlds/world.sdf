@@ -257,7 +257,7 @@
       </link>
       <static>false</static>
       <allow_auto_disable>true</allow_auto_disable>
-      <pose>0.50000000000368494 4.2159513716924206e-12 1.0649991508963497 4.2251901669083611e-12 -1.9907850585687783e-12 1.0000099863797667e-05</pose>
+      <pose>0.36000000000368494 4.2159513716924206e-12 1.0649991508963497 4.2251901669083611e-12 -1.9907850585687783e-12 1.0000099863797667e-05</pose>
       <self_collide>false</self_collide>
     </model>
     <model name='green_cylinder'>
@@ -362,7 +362,7 @@
       </link>
       <static>false</static>
       <allow_auto_disable>true</allow_auto_disable>
-      <pose>0.40000000636616451 -0.20000000234418991 1.0649991543952275 -1.266548270165628e-08 -7.6318825807904231e-08 0.00018305429698276093</pose>
+      <pose>0.32000000636616451 -0.16800000234418991 1.0649991543952275 -1.266548270165628e-08 -7.6318825807904231e-08 0.00018305429698276093</pose>
       <self_collide>false</self_collide>
     </model>
     <model name='Table'>
@@ -743,14 +743,14 @@
       <link name='link'>
         <inertial>
           <pose>0 0 0 0 0 0</pose>
-          <mass>0.2</mass>
+          <mass>0.10000000000000001</mass>
           <inertia>
-            <ixx>0.083000000000000004</ixx>
+            <ixx>0.00010582999999999999</ixx>
             <ixy>0</ixy>
             <ixz>0</ixz>
-            <iyy>0.083000000000000004</iyy>
+            <iyy>0.00010582999999999999</iyy>
             <iyz>0</iyz>
-            <izz>0.083000000000000004</izz>
+            <izz>4.5000000000000003e-05</izz>
           </inertia>
         </inertial>
         <collision name='collision'>
@@ -778,7 +778,7 @@
       <surface_props:material>metal</surface_props:material>
       <surface_props:biofouling_rating>0</surface_props:biofouling_rating>
       <surface_props:roughness>0.0</surface_props:roughness>
-      <pose>0.40041676163451634 0.20117957889639371 1.0147965879579008 -0.011212021183530268 0.0040288618334589528 0.00023562997656949864</pose>
+      <pose>0.32041676163451634 0.16807957889639371 1.0147965879579008 -0.011212021183530268 0.0040288618334589528 0.00023562997656949864</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -835,7 +835,7 @@
         </visual>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>0.20000000298023224 0.40000000596046448 1.0149998857843019 -1.1688722425658999e-18 -6.9461382799104335e-19 8.2526562057093746e-18</pose>
+      <pose>0.10000000298023224 0.28000000596046448 1.0149998857843019 -1.1688722425658999e-18 -6.9461382799104335e-19 8.2526562057093746e-18</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
