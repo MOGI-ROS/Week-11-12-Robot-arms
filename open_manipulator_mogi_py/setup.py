@@ -23,6 +23,7 @@ setup(
             'send_joint_angles = open_manipulator_mogi_py.send_joint_angles:main',
             'open_gripper = open_manipulator_mogi_py.open_gripper:main',
             'close_gripper = open_manipulator_mogi_py.close_gripper:main',
+            'inverse_kinematics = open_manipulator_mogi_py.inverse_kinematics:main',
         ],
     },
 )
