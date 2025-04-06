@@ -6,6 +6,8 @@
 [image4]: ./assets/om.png "OpenMANIPULATOR-X in Gazebo"
 [image5]: ./assets/om-1.png "OpenMANIPULATOR-X in Gazebo"
 [image6]: ./assets/om-2.png "OpenMANIPULATOR-X with MoveIt"
+[image7]: ./assets/om-3.png "OpenMANIPULATOR-X with GUI"
+[image8]: ./assets/om-4.png "OpenMANIPULATOR-X launch"
 
 # Week 11-12: Robot arms
 Simulations of OpenMANIPULATOR-X and UR3e using MoveIt 2
@@ -146,21 +148,73 @@ ros2 launch open_manipulator_moveit_config moveit_core.launch.py
 
 ![alt text][image6]
 
-
-
 ---
 
+There is another GUI made by Dynamixel that uses MoveIt in the background. Start the simulation as usually:
+```bash
 ros2 launch open_manipulator_bringup gazebo.launch.py
-ros2 launch open_manipulator_moveit_config move_group.launch.py
-ros2 launch open_manipulator_gui open_manipulator_x_gui.launch.py
+```
 
+Start MoveIt without RViz:
+```bash
+ros2 launch open_manipulator_moveit_config move_group.launch.py
+```
+
+And finally start the GUI:
+```bash
+ros2 launch open_manipulator_gui open_manipulator_x_gui.launch.py
+```
+
+![alt text][image7]
 
 ## Writing our own launch files 
 
+We can write our own launch files for bringup, like the `simulation_bringup.launch.py` in the `open_manipulator_mogi` package. With this launch file we have more flexibility, we can later easily spawn the robot in our own world and we can also adjust the coordinates where it spawns.
+
+```bash
 ros2 launch open_manipulator_mogi simulation_bringup.launch.py
+```
+
+The launch file will start the simulation and it also opens RViz.
+
+![alt text][image8]
+
+---
+
+There is another launch file the `simulation_moveit_bringup.launch.py` which initialize the simulation like before and starts MoveIt with RViz too. We can notice that MoveIt is started only after the controllers are loaded. If it's starting before every controller is loaded it might cause errors during startup.
+
+```python
+    # Launch rviz
+    rviz_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_open_manipulator_moveit_config, 'launch', 'moveit_rviz.launch.py')
+        )
+    )
+
+    # move_group
+    move_group_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_open_manipulator_moveit_config, 'launch', 'move_group.launch.py')
+        )
+    )
+
+    # Load MoveIt! only after controllers are loaded
+    move_it_event_handler = RegisterEventHandler(
+            event_handler=OnProcessExit(
+               target_action=load_joint_state_controller,
+               on_exit=[move_group_launch,
+                        rviz_launch],
+            )
+    )
+```
 
 ## Placing it into our own world
 
+With the new launch files it's very easy to load the robot in our own world:
+
+```bash
+ros2 launch open_manipulator_mogi simulation_bringup.launch.py world:=world.sdf z:=1.02
+```
 
 ## Adding a gripper camera
 
