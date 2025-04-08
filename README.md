@@ -512,16 +512,18 @@ Then we could grab and move the red box with the gripper.
 # Unviersal Robots
 
 ```bash
-https://github.com/MOGI-ROS/Universal_Robots_ROS2_GZ_Simulation
+https://github.com/MOGI-ROS/Universal_Robots_ROS2_GZ_Simulation ros2
+https://github.com/MOGI-ROS/Universal_Robots_ROS2_Description ros2
+https://github.com/MOGI-ROS/Universal_Robots_ROS2_Driver ros2
+
 https://github.com/ros-industrial/ur_msgs humble
-https://github.com/UniversalRobots/Universal_Robots_Client_Library
-https://github.com/MOGI-ROS/Universal_Robots_ROS2_Description
-https://github.com/MOGI-ROS/Universal_Robots_ROS2_Driver
+https://github.com/UniversalRobots/Universal_Robots_Client_Library 1.9.0
 ```
 ## First try of the UR3e 
 
 ```bash
 ros2 launch ur_simulation_gz ur_sim_control.launch.py
+ros2 launch ur_simulation_gz ur_sim_control.launch.py ur_type:=ur3e
 ```
 
 ```bash
@@ -532,11 +534,58 @@ ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 
 ```bash
 ros2 launch ur_simulation_gz ur_sim_moveit.launch.py
+ros2 launch ur_simulation_gz ur_sim_moveit.launch.py ur_type:=ur3e
 ```
 
 ## Adding a gripper 
 
+ROS2-lessons/Universal_Robots_ROS2_GZ_Simulation/ur_simulation_gz/launch/ur_sim_control.launch.py
 
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "description_file",
+            default_value=PathJoinSubstitution(
+                [FindPackageShare("ur_simulation_gz"), "urdf", "ur_gz.urdf.xacro"]
+            ),
+            description="URDF/XACRO description file (absolute path) with the robot.",
+        )
+    )
+
+ROS2-lessons/Universal_Robots_ROS2_GZ_Simulation/ur_simulation_gz/urdf/ur_gz.urdf.xacro
+ROS2-lessons/Universal_Robots_ROS2_Description/urdf/ur_macro.xacro
+
+```xml
+    <!-- End effector -->
+    <joint name="${tf_prefix}end_effector_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.05" rpy="0 0 0"/>
+      <parent link="${tf_prefix}tool0"/>
+      <child link="${tf_prefix}end_effector_link"/>
+    </joint>
+
+    <!-- End effector link -->
+    <link name="${tf_prefix}end_effector_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.01 0.01 0.01" />
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <inertial>
+        <origin xyz="0 0 0" />
+        <mass value="1.0e-03" />
+        <inertia ixx="1.0e-03" ixy="0.0" ixz="0.0"
+                iyy="1.0e-03" iyz="0.0"
+                izz="1.0e-03" />
+      </inertial>
+    </link>
+```
+
+TODO: image
+
+
+TODO: RH-P12-RN-A
 
 ## Updating MoveIt config
 
@@ -544,8 +593,12 @@ SRDF file add new home
 
 ## Gazebo world
 
-
+```bash
+ros2 launch ur_mogi simulation_bringup.launch.py ur_type:=ur3e
+ros2 launch ur_mogi simulation_moveit_bringup.launch.py ur_type:=ur3e
+```
 
 ## MoveIt commander
 
+TODO:
 
