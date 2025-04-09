@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'moveit_commander = ur_mogi_py.moveit_commander:main',
         ],
     },
 )
