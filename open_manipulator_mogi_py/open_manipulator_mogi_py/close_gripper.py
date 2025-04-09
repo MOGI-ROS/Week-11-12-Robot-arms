@@ -30,7 +30,7 @@ class GripperCommandActionClient(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = GripperCommandActionClient()
-    node.gripper_position = 0.0 # Close gripper to grab objects on table
+    node.gripper_position = -0.005 # Close gripper to grab objects on table
 
     try:
         node.send_gripper_command()

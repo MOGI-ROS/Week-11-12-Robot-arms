@@ -30,7 +30,7 @@ class GripperCommandActionClient(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = GripperCommandActionClient()
-    node.gripper_position = 0.019  # Open gripper
+    node.gripper_position = 0.015  # Open gripper
 
     try:
         node.send_gripper_command()
