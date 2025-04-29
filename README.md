@@ -22,7 +22,8 @@
 Simulations of OpenMANIPULATOR-X and UR3e using MoveIt 2
 
 ## This is how far we will get by the end of this lesson: 
-  <a href="https://youtu.be/VNM-FqoVrW8"><img width="600" src="./assets/youtube.png"></a>  
+  <!-- <a href="https://youtu.be/VNM-FqoVrW8"><img width="600" src="./assets/youtube.png"></a>  --> 
+  TODO:
 
 # Table of Contents
 1. [Introduction](#introduction)  
@@ -56,6 +57,54 @@ git clone -b starter-branch https://github.com/MOGI-ROS/Week-11-12-Robot-arms
 ```
 
 Let's take a look what's inside the package with the `tree` command!
+
+```bash
+.
+├── open_manipulator_mogi
+│   ├── CMakeLists.txt
+│   ├── package.xml
+│   ├── config
+│   │   └── gz_bridge.yaml
+│   ├── launch
+│   │   ├── simulation_bringup.launch.py
+│   │   └── simulation_moveit_bringup.launch.py
+│   ├── rviz
+│   │   └── rviz.rviz
+│   └── worlds
+│       ├── empty.sdf
+│       └── world.sdf
+├── open_manipulator_mogi_py
+│   ├── open_manipulator_mogi_py
+│   │   ├── __init__.py
+│   │   ├── close_gripper.py
+│   │   ├── inverse_kinematics.py
+│   │   ├── open_gripper.py
+│   │   └── send_joint_angles.py
+│   ├── resource
+│   │   └── open_manipulator_mogi_py
+│   ├── package.xml
+│   ├── setup.cfg
+│   └── setup.py
+├── ur_mogi
+│   ├── CMakeLists.txt
+│   ├── package.xml
+│   ├── launch
+│   │   ├── simulation_bringup.launch.py
+│   │   └── simulation_moveit_bringup.launch.py
+│   ├── rviz
+│   └── worlds
+│       ├── empty.sdf
+│       └── world.sdf
+└── ur_mogi_py
+    ├── resource
+    │   └── ur_mogi_py
+    ├── package.xml
+    ├── setup.cfg
+    ├── setup.py
+    └── ur_mogi_py
+        ├── __init__.py
+        └── moveit_commander.py
+```
 
 TODO:
 
