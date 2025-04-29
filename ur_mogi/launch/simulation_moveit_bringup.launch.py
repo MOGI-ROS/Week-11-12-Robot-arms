@@ -33,7 +33,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Opaq
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
-
+from launch_ros.actions import Node
 
 def launch_setup(context, *args, **kwargs):
     # Initialize Arguments
@@ -68,9 +68,22 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
+    trajectory_node = Node(
+        package='mogi_trajectory_server',
+        executable='mogi_trajectory_server',
+        name='mogi_trajectory_server',
+        parameters=[{'reference_frame_id': 'world',
+                     'robot_frame_id': 'end_effector_link',
+                     'update_rate': 5.0,
+                     'publish_rate': 5.0,
+                     'min_distance': 0.02,
+                     }],
+    )
+
     nodes_to_launch = [
         ur_control_launch,
         ur_moveit_launch,
+        trajectory_node,
     ]
 
     return nodes_to_launch

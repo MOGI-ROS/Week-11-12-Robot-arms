@@ -193,6 +193,18 @@ def launch_setup(context, *args, **kwargs):
         output="screen",
     )
 
+    trajectory_node = Node(
+        package='mogi_trajectory_server',
+        executable='mogi_trajectory_server',
+        name='mogi_trajectory_server',
+        parameters=[{'reference_frame_id': 'world',
+                     'robot_frame_id': 'end_effector_link',
+                     'update_rate': 5.0,
+                     'publish_rate': 5.0,
+                     'min_distance': 0.02,
+                     }],
+    )
+
     nodes_to_start = [
         robot_state_publisher_node,
         joint_state_broadcaster_spawner,
@@ -202,6 +214,7 @@ def launch_setup(context, *args, **kwargs):
         gz_spawn_entity,
         gz_launch_description,
         gz_sim_bridge,
+        trajectory_node,
     ]
 
     return nodes_to_start
@@ -288,7 +301,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "rviz_config_file",
             default_value=PathJoinSubstitution(
-                [FindPackageShare("ur_description"), "rviz", "view_robot.rviz"]
+                [FindPackageShare("ur_mogi"), "rviz", "rviz.rviz"]
             ),
             description="Rviz config file (absolute path) to use when launching rviz.",
         )
