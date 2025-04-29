@@ -438,7 +438,7 @@ ros2 launch open_manipulator_mogi simulation_bringup.launch.py
 
 ## Custom nodes for moving the robot
 
-There are 3 nodes in the `open_manipulator_mogi_py` package:
+There are 4 nodes in the `open_manipulator_mogi_py` package:
 
 1. `send_joint_angles.py`: send joint angles on the `/arm_controller/joint_trajectory` topic.
 2. `open_gripper.py`: an action client to send `open` (`0.019`) gripper position through the `/gripper_controller/gripper_cmd` action.
