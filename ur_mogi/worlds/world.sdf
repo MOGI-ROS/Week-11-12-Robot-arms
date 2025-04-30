@@ -1,6 +1,6 @@
 <sdf version='1.10'>
   <world name='empty'>
-    <physics name='1ms' type='ignored'>
+    <physics name='1ms' type='ode'>
       <max_step_size>0.005</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>500</real_time_update_rate>
@@ -160,7 +160,7 @@
     <model name='red_box'>
       <link name='link'>
         <inertial>
-          <mass>0.10000000000000001</mass>
+          <mass>0.30000000000000001</mass>
           <inertia>
             <ixx>0.00010417</ixx>
             <ixy>0</ixy>
@@ -211,11 +211,11 @@
           <surface>
             <friction>
               <ode>
-                <mu>1</mu>
-                <mu2>1</mu2>
-                <fdir1>0 0 0</fdir1>
-                <slip1>0</slip1>
-                <slip2>0</slip2>
+                <mu>30.0</mu>
+                <mu2>30.0</mu2>
+                <fdir1>1 0 0</fdir1>
+                <slip1>0.0</slip1>
+                <slip2>0.0</slip2>
               </ode>
               <torsional>
                 <coefficient>1</coefficient>
@@ -229,19 +229,19 @@
             </friction>
             <bounce>
               <restitution_coefficient>0</restitution_coefficient>
-              <threshold>1000000</threshold>
+              <threshold>0</threshold>
             </bounce>
             <contact>
               <collide_without_contact>false</collide_without_contact>
               <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
               <collide_bitmask>1</collide_bitmask>
               <ode>
-                <soft_cfm>0</soft_cfm>
-                <soft_erp>0.20000000000000001</soft_erp>
-                <kp>10000000000000</kp>
-                <kd>1</kd>
+                <soft_cfm>0.01</soft_cfm>
+                <soft_erp>0.3</soft_erp>
+                <kp>5000</kp>
+                <kd>1000</kd>
                 <max_vel>0.01</max_vel>
-                <min_depth>0</min_depth>
+                <min_depth>0.002</min_depth>
               </ode>
               <bullet>
                 <split_impulse>true</split_impulse>
@@ -316,9 +316,9 @@
           <surface>
             <friction>
               <ode>
-                <mu>1</mu>
-                <mu2>1</mu2>
-                <fdir1>0 0 0</fdir1>
+                <mu>30</mu>
+                <mu2>30</mu2>
+                <fdir1>1 0 0</fdir1>
                 <slip1>0</slip1>
                 <slip2>0</slip2>
               </ode>
@@ -334,19 +334,19 @@
             </friction>
             <bounce>
               <restitution_coefficient>0</restitution_coefficient>
-              <threshold>1000000</threshold>
+              <threshold>0</threshold>
             </bounce>
             <contact>
               <collide_without_contact>false</collide_without_contact>
               <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
               <collide_bitmask>1</collide_bitmask>
               <ode>
-                <soft_cfm>0</soft_cfm>
-                <soft_erp>0.20000000000000001</soft_erp>
-                <kp>10000000000000</kp>
-                <kd>1</kd>
+                <soft_cfm>0.01</soft_cfm>
+                <soft_erp>0.3</soft_erp>
+                <kp>5000</kp>
+                <kd>1000</kd>
                 <max_vel>0.01</max_vel>
-                <min_depth>0</min_depth>
+                <min_depth>0.002</min_depth>
               </ode>
               <bullet>
                 <split_impulse>true</split_impulse>
