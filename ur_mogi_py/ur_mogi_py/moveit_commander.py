@@ -57,8 +57,8 @@ def main():
 
     moveit_config_builder = MoveItConfigsBuilder("ur")
     # This line is key!!!
-    moveit_config_builder.moveit_cpp(file_path=get_package_share_directory("ur_moveit_config") + "/config/moveit_cpp.yaml") 
-    moveit_config_builder.robot_description_semantic(get_package_share_directory("ur_moveit_config") + "/srdf/moveit_cpp.srdf")
+    moveit_config_builder.moveit_cpp(file_path=get_package_share_directory("ur_mogi") + "/config/moveit_cpp.yaml") 
+    moveit_config_builder.robot_description_semantic(get_package_share_directory("ur_mogi") + "/config/moveit_cpp.srdf")
     moveit_config_builder.trajectory_execution(get_package_share_directory("ur_moveit_config") + "/config/moveit_controllers.yaml")
     moveit_config_builder.planning_scene_monitor(publish_robot_description=True, publish_robot_description_semantic=True)
     moveit_config_dict = moveit_config_builder.to_moveit_configs().to_dict()
