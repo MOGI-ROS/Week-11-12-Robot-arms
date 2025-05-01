@@ -48,6 +48,14 @@
       <joint name="wrist_2_joint" value="1.5708" />
       <joint name="wrist_3_joint" value="0.7854" />
     </group_state>
+    <group_state name="mogi_down" group="ur_manipulator">
+      <joint name="elbow_joint" value="0.0" />
+      <joint name="shoulder_lift_joint" value="0.0" />
+      <joint name="shoulder_pan_joint" value="-3.1415" />
+      <joint name="wrist_1_joint" value="0.0" />
+      <joint name="wrist_2_joint" value="1.5708" />
+      <joint name="wrist_3_joint" value="1.5708" />
+    </group_state>
     <group_state name="open" group="gripper">
         <joint name="rh_r1_joint" value="0.0"/>
     </group_state>

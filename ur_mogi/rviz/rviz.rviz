@@ -5,6 +5,9 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /RobotModel1/Description Topic1
+        - /PlanningScene1/Scene Geometry1
+        - /PlanningScene1/Scene Robot1
+        - /PlanningScene1/Scene Robot1/Links1
       Splitter Ratio: 0.5
     Tree Height: 1055
   - Class: rviz_common/Selection
@@ -194,6 +197,130 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /trajectory
       Value: true
+    - Class: moveit_rviz_plugin/PlanningScene
+      Enabled: true
+      Move Group Namespace: ""
+      Name: PlanningScene
+      Planning Scene Topic: /monitored_planning_scene
+      Robot Description: robot_description
+      Scene Geometry:
+        Scene Alpha: 0.8999999761581421
+        Scene Color: 50; 230; 50
+        Scene Display Time: 0.009999999776482582
+        Show Scene Geometry: true
+        Voxel Coloring: Z-Axis
+        Voxel Rendering: Occupied Voxels
+      Scene Robot:
+        Attached Body Color: 150; 50; 150
+        Links:
+          All Links Enabled: false
+          Expand Joint Details: false
+          Expand Link Details: false
+          Expand Tree: false
+          Link Tree Style: Links in Alphabetic Order
+          base:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          base_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          base_link_inertia:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          end_effector_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          flange:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          forearm_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          ft_frame:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          ground_plane:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          rh_p12_rn_base:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          rh_p12_rn_ee:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          rh_p12_rn_l1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          rh_p12_rn_l2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          rh_p12_rn_r1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          rh_p12_rn_r2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          shoulder_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          tool0:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          upper_arm_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          world:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          wrist_1_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          wrist_2_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+          wrist_3_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: false
+        Robot Alpha: 1
+        Show Robot Collision: false
+        Show Robot Visual: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -240,25 +367,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.020998239517212
+      Distance: 1.934942364692688
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.17035548388957977
-        Y: -0.1120181530714035
-        Z: 0.4762451648712158
+        X: 0.20870722830295563
+        Y: -0.56013423204422
+        Z: 0.3303418755531311
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3552033007144928
+      Pitch: 0.30520305037498474
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.590405464172363
+      Yaw: 4.020386219024658
     Saved: ~
 Window Geometry:
   Displays:
