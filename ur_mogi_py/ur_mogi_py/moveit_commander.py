@@ -430,7 +430,7 @@ def main():
     input("Press Enter to continue...")
 
     ###########################################################################
-    # Add graps objects to the planning scene
+    # Add grasp objects to the planning scene
     ###########################################################################
 
     add_grasp_objects(planning_scene_monitor)
@@ -478,7 +478,7 @@ def main():
     input("Press Enter to continue...")
 
     ###########################################################################
-    # Plan 10 - set goal state with cartesian constraints
+    # Plan 10 - set goal state with PoseStamped message
     ###########################################################################
 
     # set plan start state to current state
