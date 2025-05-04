@@ -17,6 +17,19 @@
 [image15]: ./assets/om-10.png "OpenMANIPULATOR-X red box"
 [image16]: ./assets/om-11.png "OpenMANIPULATOR-X open gripper"
 [image17]: ./assets/om-12.png "OpenMANIPULATOR-X IK angles"
+[image18]: ./assets/ur.png "UR"
+[image19]: ./assets/ur-1.png "UR"
+[image20]: ./assets/ur-2.png "UR"
+[image21]: ./assets/ur-3.png "UR"
+[image22]: ./assets/ur-4.png "UR"
+[image23]: ./assets/ur-5.png "UR"
+[image24]: ./assets/gripper.png "RH-P12-RN(A)"
+[image25]: ./assets/ur-6.png "UR"
+[image26]: ./assets/ur-7.png "UR"
+[image27]: ./assets/ur-8.png "UR"
+[image28]: ./assets/ur-9.png "UR"
+[image29]: ./assets/ur-10.png "UR"
+[image30]: ./assets/ur-11.png "UR"
 
 # Week 11-12: Robot arms
 Simulations of OpenMANIPULATOR-X and UR3e using MoveIt 2
@@ -560,36 +573,85 @@ Then we could grab and move the red box with the gripper.
 
 # Unviersal Robots
 
-```bash
-https://github.com/MOGI-ROS/Universal_Robots_ROS2_GZ_Simulation ros2
-https://github.com/MOGI-ROS/Universal_Robots_ROS2_Description ros2
-https://github.com/MOGI-ROS/Universal_Robots_ROS2_Driver ros2
+To start using the universal robots robotic arms in the simulation we have to download a couple of packages into our workspace. Let's download the following ones from the official sources:
 
-https://github.com/ros-industrial/ur_msgs humble
-https://github.com/UniversalRobots/Universal_Robots_Client_Library 1.9.0
+```bash
+git clone -b humble https://github.com/ros-industrial/ur_msgs
 ```
+
+and the `1.9.0` tag of the UR client library:
+
+```bash
+git clone https://github.com/UniversalRobots/Universal_Robots_Client_Library
+```
+
+And download the following ones from the MOGI-ROS organization:
+```bash
+git clone -b ros2 https://github.com/MOGI-ROS/Universal_Robots_ROS2_GZ_Simulation
+git clone -b ros2 https://github.com/MOGI-ROS/Universal_Robots_ROS2_Description
+git clone -b ros2 https://github.com/MOGI-ROS/Universal_Robots_ROS2_Driver
+```
+
+Rebuild the workspace and source the `install/setup.bash` to ensure that new packages are recognized!
+
 ## First try of the UR3e 
+
+Let's try the UR simulation with the following command:
 
 ```bash
 ros2 launch ur_simulation_gz ur_sim_control.launch.py
+```
+
+![alt text][image18]
+
+Although the simulation starts, we might recognize that is a much bigger robot than a UR3e. The robot models in the UR packages are parameterized to run any of the UR robots, by default it starts with a UR5e. To start the simulation of a specific arm we can use the `ur_type` argument with the launch file:
+
+```bash
 ros2 launch ur_simulation_gz ur_sim_control.launch.py ur_type:=ur3e
 ```
+
+![alt text][image19]
+
+And we can start a `rqt_joint_trajectory_controller` to move the joints of the UR3e:
 
 ```bash
 ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 ```
 
+![alt text][image20]
+
 ## UR3e with MoveIt
+
+UR robots support MoveIt2 out of the box, let's try it out:
 
 ```bash
 ros2 launch ur_simulation_gz ur_sim_moveit.launch.py
+```
+
+![alt text][image21]
+
+This of course starts again a UR5e model by default, but we can run the UR3e by defining the `ur_type` argument:
+
+```bash
 ros2 launch ur_simulation_gz ur_sim_moveit.launch.py ur_type:=ur3e
 ```
 
+![alt text][image22]
+
 ## Adding a gripper 
 
-ROS2-lessons/Universal_Robots_ROS2_GZ_Simulation/ur_simulation_gz/launch/ur_sim_control.launch.py
+UR robots don't have a built-in gripper, we can add our own choice, in this lesson we will use a PH-R12-RN(A) from ROBOTIS that we use at the faculty as well.
 
+First, let's find it out which file do we have to modify!
+
+Let's see the `ur_sim_control.launch.py` file which is in this location:
+```yaml
+Universal_Robots_ROS2_GZ_Simulation/ur_simulation_gz/launch/ur_sim_control.launch.py
+```
+
+Here we can see which `urdf` file is used for the robot description:
+
+```python
     declared_arguments.append(
         DeclareLaunchArgument(
             "description_file",
@@ -599,14 +661,29 @@ ROS2-lessons/Universal_Robots_ROS2_GZ_Simulation/ur_simulation_gz/launch/ur_sim_
             description="URDF/XACRO description file (absolute path) with the robot.",
         )
     )
+```
 
-ROS2-lessons/Universal_Robots_ROS2_GZ_Simulation/ur_simulation_gz/urdf/ur_gz.urdf.xacro
-ROS2-lessons/Universal_Robots_ROS2_Description/urdf/ur_macro.xacro
+Let's open the following file:
+```yaml
+Universal_Robots_ROS2_GZ_Simulation/ur_simulation_gz/urdf/ur_gz.urdf.xacro
+```
+
+And we'll see that this includes the robot model with a `xacro` macro:
+```xml
+<xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+```
+
+Let's see the following `urdf`:
+```yaml
+Universal_Robots_ROS2_Description/urdf/ur_macro.xacro
+```
+
+Here, first we can add an end effector link as a little red cube:
 
 ```xml
     <!-- End effector -->
     <joint name="${tf_prefix}end_effector_joint" type="fixed">
-      <origin xyz="0.0 0.0 0.05" rpy="0 0 0"/>
+      <origin xyz="0.0 0.0 0.125" rpy="0 0 0"/>
       <parent link="${tf_prefix}tool0"/>
       <child link="${tf_prefix}end_effector_link"/>
     </joint>
@@ -618,7 +695,9 @@ ROS2-lessons/Universal_Robots_ROS2_Description/urdf/ur_macro.xacro
         <geometry>
           <box size="0.01 0.01 0.01" />
         </geometry>
-        <material name="red"/>
+        <material name="red">
+          <color rgba="0.8 0.0 0.0 1.0"/>
+        </material>
       </visual>
 
       <inertial>
@@ -631,23 +710,114 @@ ROS2-lessons/Universal_Robots_ROS2_Description/urdf/ur_macro.xacro
     </link>
 ```
 
-TODO: image
+Rebuild the workspace and try our change!
 
+```bash
+ros2 launch ur_simulation_gz ur_sim_control.launch.py ur_type:=ur3e
+```
 
-TODO: RH-P12-RN-A
+![alt text][image23]
+
+---
+
+Now it's time to add a real RH-P12-RN(A) gripper. Clone the following repo to our workspace:
+
+```bash
+git clone -b ros2-jazzy https://github.com/dudasdavid/RH-P12-RN-A
+```
+
+Rebuild the workspace and source `install/setup.bash`.
+
+First, try the gripper simulation together with the `joint_trajectory_controller`:
+
+```bash
+ros2 launch rh_p12_rn_a_gazebo rh_p12_rn_a_gazebo.launch.py
+```
+
+![alt text][image24]
+
+Now it's time to integrate the gripper with the UR robot's model. This is already done on the `ros2-jazzy-gripper` branch of the following repos, switch to them and we can take a look on the files changed:
+
+> Either delete the existing folders and clone them again with the right branch or switch to the right branch within the folder of the already cloned repos.
+> ```bash
+> git switch ros2-jazzy-gripper
+> ```
+> or
+>```bash
+> git clone -b ros2-jazzy-gripper https://github.com/MOGI-ROS/Universal_Robots_ROS2_GZ_Simulation
+> git clone -b ros2-jazzy-gripper https://github.com/MOGI-ROS/Universal_Robots_ROS2_Description
+> git clone -b ros2-jazzy-gripper https://github.com/MOGI-ROS/Universal_Robots_ROS2_Driver
+> ```
+
+After re-building the workspace we can start the simulation as before (and a `joint_trajectory_controller`):
+
+```bash
+ros2 launch ur_simulation_gz ur_sim_control.launch.py ur_type:=ur3e
+```
+
+![alt text][image25]
+
+### Trying UR5e
+
+We can use the gripper now with any UR robot type without any further changes, let's run the simulation with a UR5e:
+
+```bash
+ros2 launch ur_simulation_gz ur_sim_control.launch.py ur_type:=ur5e
+```
+
+![alt text][image26]
 
 ## Updating MoveIt config
 
-SRDF file add new home
+The gripper works with MoveIt too:
+
+```bash
+ros2 launch ur_simulation_gz ur_sim_moveit.launch.py ur_type:=ur3e
+```
+
+![alt text][image27]
+
+UR robots' MoveIt config is not generated by the setup assistant, if we want to change something we have to edit the configuration files. Let's add a custom pre-defined pose in the following file:
+
+```yaml
+Universal_Robots_ROS2_Driver/ur_moveit_config/srdf/ur_macro.srdf.xacro
+```
+
+Let's add a new home position:
+```xml
+    <group_state name="mogi_home" group="ur_manipulator">
+      <joint name="elbow_joint" value="-1.0472" />
+      <joint name="shoulder_lift_joint" value="-1.5707" />
+      <joint name="shoulder_pan_joint" value="-3.1415" />
+      <joint name="wrist_1_joint" value="-1.0472" />
+      <joint name="wrist_2_joint" value="1.5708" />
+      <joint name="wrist_3_joint" value="0.7854" />
+    </group_state>
+```
+
+We have to rebuild the workspace and then we can try this new pose:
+
+![alt text][image28]
 
 ## Gazebo world
+
+As we saw with the Openmanipulator-x, it's usually easier to create our own launchfiles to put the robot into our custom world. This lesson has the two following launch files:
 
 ```bash
 ros2 launch ur_mogi simulation_bringup.launch.py ur_type:=ur3e
 ros2 launch ur_mogi simulation_moveit_bringup.launch.py ur_type:=ur3e
 ```
 
+### MOGI trajectory server
+
 ## MoveIt commander
 
 TODO:
+ros2 launch ur_mogi simulation_bringup.launch.py ur_type:=ur3e
+ros2 run ur_mogi_py moveit_commander
+
+
+
+
+
 
