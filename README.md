@@ -35,8 +35,10 @@
 Simulations of OpenMANIPULATOR-X and UR3e using MoveIt 2
 
 ## This is how far we will get by the end of this lesson: 
-  <!-- <a href="https://youtu.be/VNM-FqoVrW8"><img width="600" src="./assets/youtube.png"></a>  --> 
-  TODO:
+
+<a href="https://youtu.be/zv7jTgL41HU"><img width="600" src="./assets/om-x.png"></a>
+
+<a href="https://youtu.be/g3dlWbuPxVo"><img width="600" src="./assets/moveit-commander.png"></a>
 
 # Table of Contents
 1. [Introduction](#introduction)  
@@ -101,10 +103,14 @@ Let's take a look what's inside the package with the `tree` command!
 ├── ur_mogi
 │   ├── CMakeLists.txt
 │   ├── package.xml
+│   ├── config
+│   │   ├── moveit_cpp.srdf
+│   │   └── moveit_cpp.yaml
 │   ├── launch
 │   │   ├── simulation_bringup.launch.py
 │   │   └── simulation_moveit_bringup.launch.py
 │   ├── rviz
+│   │   └── rviz.rviz
 │   └── worlds
 │       ├── empty.sdf
 │       └── world.sdf
@@ -118,8 +124,6 @@ Let's take a look what's inside the package with the `tree` command!
         ├── __init__.py
         └── moveit_commander.py
 ```
-
-TODO:
 
 # OpenMANIPULATOR-X
 
@@ -808,16 +812,51 @@ ros2 launch ur_mogi simulation_bringup.launch.py ur_type:=ur3e
 ros2 launch ur_mogi simulation_moveit_bringup.launch.py ur_type:=ur3e
 ```
 
+![alt text][image29]
+
 ### MOGI trajectory server
+
+Our custom launch file already includes the `mogi_trajectory_server` that we used in the previous lessons to visualize the robot's trajectory. We can use the same node to visualize the end effector position in the 3D space.
+
+![alt text][image30]
 
 ## MoveIt commander
 
-TODO:
+So far we used MoveIt from the RViz layout, but MoveIt's motion planning, collision detection, etc stack can be controlled from custom C++ and Python nodes. Actually the C++ interface is more mature, but with ROS2 Jazzy the Python interface was finally released.
+
+> To use this interface we don't have to run MoveIt in the background, the C++ or Python interface will initialize all MoveIt components. This is a different concept compared from MoveIt 1 in ROS1.
+
+The `moveit_commander.py` node will perform the following sequence:
+1. Goes to named configuration (`mogi_down`)
+2. Adds collision object in the 3D space around the robot
+3. Goes back to the initial named configuration (`up`) but avoiding the newly added collision objects
+4. Goes to named configuration (`mogi_home`)
+5. Closes the gripper
+6. Removes the collision objects
+7. Set the joint angles directly
+8. Goes to a certain TCP pose using MoveIt's IK
+9. Opens gripper
+10. Goes to a pose with cartesian constraints
+11. Adds a grasp object
+12. Closes the gripper to a certain joint angle
+13. Adds another collision object to the scene
+14. Goes to a certain pose but calculates with both grasp and collision objects during motion planning
+15. Goes back to the initial named configuration (`up`)
+16. Detaches grasp object and removes collision objects
+
+Start the simulation first:
+
+```bash
 ros2 launch ur_mogi simulation_bringup.launch.py ur_type:=ur3e
+```
+
+Then run the follwing node:
+
+```bash
 ros2 run ur_mogi_py moveit_commander
+```
 
-
-
+<a href="https://youtu.be/g3dlWbuPxVo"><img width="600" src="./assets/moveit-commander.png"></a>
 
 
 
